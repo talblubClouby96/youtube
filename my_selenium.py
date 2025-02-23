@@ -90,7 +90,7 @@ def run_thread(links, thread_id):
                         driver.add_cookie(cookie)
                 driver.refresh()
                 time.sleep(10)
-                drivers[j].save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
+                driver.save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
                 print("Da dung lai cookies")
             else:
                 print("Khong tim thay cookies")
