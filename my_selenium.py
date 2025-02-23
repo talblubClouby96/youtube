@@ -98,7 +98,7 @@ def run_thread(links, thread_id):
             time.sleep(5)
             driver.get(links[i])
             # Kiểm tra xem file cookies đã tồn tại chưa
-            if os.path.exists("cookies.json"):
+            if os.path.exists("cookies/cookies.json"):
                 # Nếu file cookies có, tải cookies từ file và thêm vào trình duyệt
                 with open("cookies/cookies.json", "r") as file:
                     cookies = json.load(file)
@@ -141,7 +141,7 @@ def main():
     driver = create_driver(user_agent)
     driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
     # Kiểm tra xem file cookies đã tồn tại chưa
-    if os.path.exists("cookies.json"):
+    if os.path.exists("cookies/cookies.json"):
         # Nếu file cookies có, tải cookies từ file và thêm vào trình duyệt
         with open("cookies/cookies.json", "r") as file:
             cookies = json.load(file)
