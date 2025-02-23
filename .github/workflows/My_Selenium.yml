@@ -2,13 +2,15 @@ name: My Selenium
 
 on:
   workflow_dispatch:
+  schedule:
+  - cron: '0 */3 * * *'
 
 jobs:
   youtube_bot:
     continue-on-error: true
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [windows-latest,windows-latest,windows-latest,windows-latest,windows-latest, windows-latest, windows-latest, windows-latest,windows-latest, windows-latest, windows-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
