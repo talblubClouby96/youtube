@@ -108,9 +108,10 @@ def run_thread(links, thread_id):
         for j in range(len(drivers)):
             try:
                 sleep_time = random.randint(1, 10)
-                time.sleep(sleep_time)
+                #time.sleep(sleep_time)
                 drivers[j].refresh()
                 perform_human_like_actions(drivers[j], drivers[j].find_element(By.XPATH, '//body'))  # Adjust based on actual elements
+                time.sleep(sleep_time)
                 drivers[j].save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
                 #print(f"Screenshot taken for URL {links[j]} by thread {thread_id}")
             except Exception as e:
