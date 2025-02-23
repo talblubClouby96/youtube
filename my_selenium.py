@@ -80,6 +80,22 @@ def run_thread(links, thread_id):
         driver = create_driver(user_agents[i % len(user_agents)])
         drivers.append(driver)
         try:
+            driver.get("https://www.youtube.com/")
+
+            time.sleep(2)
+            sign_in_button = driver.find_element(By.XPATH, '//*[@aria-label="Sign in"]')
+            sign_in_button.click()
+            
+            email_field = driver.find_element(By.XPATH, '//*[@id="identifierId"]')
+            email_field.send_keys("nguyenbaolamrsf3t8fjfdih@dfphayy.us")  
+            email_field.send_keys(Keys.RETURN)
+            
+            time.sleep(10)
+            
+            password_field = driver.find_element(By.XPATH, '//*[@name="Passwd"]') 
+            password_field.send_keys("Phan9999")  
+            password_field.send_keys(Keys.RETURN)
+            time.sleep(5)
             driver.get(links[i])
             # Kiểm tra xem file cookies đã tồn tại chưa
             if os.path.exists("cookies.json"):
