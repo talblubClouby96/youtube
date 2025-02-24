@@ -1,4 +1,4 @@
-name: My Selenium 
+name: My Selenium 2
 
 on:
   workflow_dispatch:
