@@ -97,7 +97,7 @@ def run_thread(links, thread_id):
             password_field.send_keys(Keys.RETURN)
             time.sleep(5)
             driver.get(links[i])
-            # Kiểm tra xem file cookies đã tồn tại chưa
+            """# Kiểm tra xem file cookies đã tồn tại chưa
             if os.path.exists("cookies/cookies.json"):
                 # Nếu file cookies có, tải cookies từ file và thêm vào trình duyệt
                 with open("cookies/cookies.json", "r") as file:
@@ -110,7 +110,8 @@ def run_thread(links, thread_id):
                 print("Da dung lai cookies")
             else:
                 print("Khong tim thay cookies")
-
+            """
+            driver.save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
             perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))  # Adjust based on actual elements
         except Exception as e:
             print(f"Error with driver {i}: {e}")
@@ -140,6 +141,7 @@ def main():
     user_agent = random.choice(user_agents)
     driver = create_driver(user_agent)
     driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
+    """
     # Kiểm tra xem file cookies đã tồn tại chưa
     if os.path.exists("cookies/cookies.json"):
         # Nếu file cookies có, tải cookies từ file và thêm vào trình duyệt
@@ -151,11 +153,11 @@ def main():
         print("Da dung lai cookies")
     else:
         print("Khong tin thay cookies")
-
+    """
     driver.implicitly_wait(10)
     
     links = []
-    while len(links) < 500:
+    while len(links) < 200:
         elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
         new_links = [element.get_attribute('href') for element in elements]
         links.extend([link for link in new_links if link not in links])
