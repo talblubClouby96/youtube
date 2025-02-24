@@ -1,16 +1,17 @@
-name: My Selenium 2
+name: My Selenium 
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 */3 * * *'  # Chạy mỗi 3 giờ
 
 jobs:
   youtube_bot:
     continue-on-error: true
     strategy:
       matrix:
-        os: [windows-latest]
-        cookie_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] # 20 workflows với 20 chỉ số cookies khác nhau
-    runs-on: ${{ matrix.os }}
+        email: ['nguyenthuhuonghpwr9uhh7501@rotitk.us', 'lemykieue93yotx2fj6f@rotitk.us', 'nguyenmongnhif74lkeeuz7dc@rotitk.us','mackimtuyenfbuyscf654ei@rotitk.us','nguyenbaolamrsf3t8fjfdih@dfphayy.us'] 
+    runs-on: windows-latest  # Chạy trên hệ điều hành Windows
 
     steps:
       - name: Checkout code
@@ -27,11 +28,12 @@ jobs:
 
       - name: Run Selenium script
         run: |
-          python my_selenium.py ${{ matrix.cookie_index }}  # Truyền chỉ số cookies vào script
+          # Truyền email từ matrix vào Python script
+          python my_selenium2.py --email ${{ matrix.email }} --password ${{ secrets.PASSWORD }}
 
       - name: Archive screenshots
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: screenshots-${{ github.run_id }}
+          name: screenshots-${{ matrix.email }}
           path: screenshots/
