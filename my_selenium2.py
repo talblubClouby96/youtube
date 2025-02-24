@@ -134,7 +134,7 @@ def main():
     driver.implicitly_wait(10)
     
     links = []
-    while len(links) < 200:
+    while len(links) < 500:
         elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
         new_links = [element.get_attribute('href') for element in elements]
         links.extend([link for link in new_links if link not in links])
