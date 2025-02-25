@@ -18,11 +18,7 @@ jobs:
               - 'nguyenbaolamrsf3t8fjfdih@dfphayy.us'
 
               #1DAY
-              - 'trantramoanhbo8sj7zh334r@hakatoy.us'
-              - 'maihatienmbspr3i98wll@hakatoy.us'
-              - 'nguyenhoangbaoqf4zm2ypd7gn@hakatoy.us'
-              - 'thankimhuongl81c2h3h34xc@hakatoy.us'
-              - 'nguyendoandiemquynh7kp8vuj01zdl@hakatoy.us'
+       
         #email: ['nguyenthuhuonghpwr9uhh7501@rotitk.us', 'lemykieue93yotx2fj6f@rotitk.us', 'nguyenmongnhif74lkeeuz7dc@rotitk.us','mackimtuyenfbuyscf654ei@rotitk.us','nguyenbaolamrsf3t8fjfdih@dfphayy.us'] 
     runs-on: windows-latest  # Chạy trên hệ điều hành Windows
 
