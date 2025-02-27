@@ -3,7 +3,7 @@ name: My Selenium 2
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */5 * * *'  # Chạy mỗi 3 giờ
+    - cron: '0 */6 * * *'  # Chạy mỗi 3 giờ
 
 jobs:
   youtube_bot:
@@ -11,20 +11,27 @@ jobs:
     strategy:
       matrix:
         email:
-          - 'nguyenthuhuonghpwr9uhh7501@rotitk.us'
-          - 'lemykieue93yotx2fj6f@rotitk.us'
-          - 'nguyenmongnhif74lkeeuz7dc@rotitk.us'
-          - 'mackimtuyenfbuyscf654ei@rotitk.us'
-          - 'duongbaotinqom3nqsusfs0@rotitk.us'
-          - 'tranbaohuynhay6v94ndq1u1@rotitk.us'
-          - 'lacthanhmaihozztj4te88d@rotitk.us'
-          - 'uathuyhoangejh1uph3trh1@rotitk.us'
-          - 'ngotuanngocozybfuvcohqw@rotitk.us'
-          - 'dangminhdanqqsq1cy5p4lc@rotitk.us'
-          - 'huynhnamtu5dru7vzjsuxm@rotitk.us'
-          - 'ngohieuphong8mx04c4nyqu1@rotitk.us'
-          - 'phamthienanmyw9yn1bqbka@rotitk.us'
-          - 'tonghoangphat0t6efwjfjx3w@rotitk.us'
+        # 27/2 7day
+          - 'vuynhiq9n5ncxax0bk@rotitk.us'
+          - 'hanbanmai871xwthmn7ea@rotitk.us'
+          - 'damanhduyb29nyrhjftqy@rotitk.us'
+          - 'duongkhuetruc8733oukz9wmd@rotitk.us'
+          - 'vutanlong4m48k8ufrlb1@rotitk.us'
+          - 'tolongquan3frty0aoevam@rotitk.us'
+          - 'nguyentrongdunguig6ounr42wc@rotitk.us'
+          - 'nguyenthithuthuy96ojfrtnhrjd@rotitk.us'
+          - 'luchuucuong0vniwrqogxet@rotitk.us'
+          - 'nguyenthihoaka4iwqdbpbgs@rotitk.us'
+          - 'trangthuynganvvyn9gwhpl62@rotitk.us'
+          - 'phamhaivy358wu37ld5gw@rotitk.us'
+          - 'buingochienx7cp4c3zpbdj@rotitk.us'
+          - 'vubichhaiju78ulaxav5m@rotitk.us'
+          - 'nguyenthidieuhang2bzkcoad3rrf@rotitk.us'
+          - 'lenhatquangmvf8hgwsovn8@rotitk.us'
+          - 'lethingocdiemeq3iik7csck6@rotitk.us'
+          - 'nguyenminhquocvsmkjdruz58z@rotitk.us'
+          - 'buiminhnhatuwez5bdiz038@rotitk.us'
+          - 'thaobaovan673s5kcduals@rotitk.us'
         #email: ['nguyenthuhuonghpwr9uhh7501@rotitk.us', 'lemykieue93yotx2fj6f@rotitk.us', 'nguyenmongnhif74lkeeuz7dc@rotitk.us','mackimtuyenfbuyscf654ei@rotitk.us','nguyenbaolamrsf3t8fjfdih@dfphayy.us'] 
     runs-on: windows-latest  # Chạy trên hệ điều hành Windows
 
