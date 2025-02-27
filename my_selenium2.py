@@ -119,7 +119,7 @@ def run_thread(links, thread_id, email, password):
                         like_button.click()
                         print("Liked the video successfully.")
                     except Exception as e:
-                    print(f"Failed to like the video: {e}")
+                        print(f"Failed to like the video: {e}")
                     
                 drivers[j].save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
             except Exception as e:
