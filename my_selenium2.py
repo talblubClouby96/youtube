@@ -103,14 +103,24 @@ def run_thread(links, thread_id, email, password):
     start_time = time.time()
 
     while time.time() - start_time < run_time:
-        sleep_time = random.randint(60, 120)
+        sleep_time = random.randint(200, 300)
         time.sleep(sleep_time)
         for j in range(len(drivers)):
             try:
                 sleep_time = random.randint(1, 10)
                 drivers[j].refresh()
                 perform_human_like_actions(drivers[j], drivers[j].find_element(By.XPATH, '//body'))
-                time.sleep(sleep_time)
+           
+                run = random.randint(1, 10)
+                if run == 5:
+                    try:
+                        like_button_xpath = '//button[@title="I like this"]'
+                        like_button = drivers[j].find_element(By.XPATH, like_button_xpath)
+                        like_button.click()
+                        print("Liked the video successfully.")
+                    except Exception as e:
+                    print(f"Failed to like the video: {e}")
+                    
                 drivers[j].save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
             except Exception as e:
                 print(f"Error with driver {j}: {e}")
