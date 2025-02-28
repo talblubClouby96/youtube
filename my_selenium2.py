@@ -99,11 +99,11 @@ def run_thread(links, thread_id, email, password):
         except Exception as e:
             print(f"Error with driver {i}: {e}")
 
-    run_time = random.randint(600, 900)
+    run_time = random.randint(300, 400)
     start_time = time.time()
 
     while time.time() - start_time < run_time:
-        sleep_time = random.randint(200, 300)
+        sleep_time = random.randint(100, 200)
         time.sleep(sleep_time)
         for j in range(len(drivers)):
             try:
@@ -111,7 +111,7 @@ def run_thread(links, thread_id, email, password):
                 drivers[j].refresh()
                 perform_human_like_actions(drivers[j], drivers[j].find_element(By.XPATH, '//body'))
            
-                run = random.randint(1, 10)
+                run = random.randint(1, 15)
                 if run == 5:
                     try:
                         like_button_xpath = '//button[@title="I like this"]'
@@ -120,6 +120,7 @@ def run_thread(links, thread_id, email, password):
                         print("Liked the video successfully.")
                     except Exception as e:
                         print(f"Failed to like the video: {e}")
+                        
                     
                 drivers[j].save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
             except Exception as e:
@@ -137,22 +138,28 @@ def main():
     email = args.email
     password = args.password
 
-    user_agent = random.choice(user_agents)
-    driver = create_driver(user_agent)
-    driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
+    # user_agent = random.choice(user_agents)
+    # driver = create_driver(user_agent)
+    # driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
     
-    driver.implicitly_wait(10)
+    # driver.implicitly_wait(10)
     
-    links = []
-    while len(links) < 500:
-        elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
-        new_links = [element.get_attribute('href') for element in elements]
-        links.extend([link for link in new_links if link not in links])
-        print(f"Number of unique links: {len(links)}")
-        scroll_down(driver)
+    # links = []
+    # while len(links) < 500:
+    #     elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
+    #     new_links = [element.get_attribute('href') for element in elements]
+    #     links.extend([link for link in new_links if link not in links])
+    #     print(f"Number of unique links: {len(links)}")
+    #     scroll_down(driver)
     
-    driver.quit()
+    # driver.quit()
+    with open('links.txt', 'r') as file:
+        # Đọc từng dòng, loại bỏ khoảng trắng và thêm vào danh sách
+        links = [line.strip() for line in file if line.strip()]
 
+        # Kiểm tra kết quả
+    print(len(links))
+    
     shuffle(links)
     
     chunk_size = 5
@@ -162,7 +169,7 @@ def main():
     for i, chunk in enumerate(chunks):
         thread = threading.Thread(target=run_thread, args=(chunk, i, email, password))
         threads.append(thread)
-        random_delay(60, 300)
+        random_delay(60, 90)
         thread.start()
 
         if len(threads) >= 5:
