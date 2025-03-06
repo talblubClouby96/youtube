@@ -1,33 +1,25 @@
 import time
-import threading
-import random
-import platform
-import argparse  # Import argparse for command-line arguments
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-import chromedriver_autoinstaller
-from random import shuffle
-import os
-import json
+from selenium.webdriver.common.keys import Keys
 import undetected_chromedriver as uc
+from selenium.webdriver.common.action_chains import ActionChains
+import random
 from fake_useragent import UserAgent
+import pickle
+from selenium.common.exceptions import WebDriverException
+import chromedriver_autoinstaller
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.keys import Keys
 
-# Automatically install the ChromeDriver and get its path
+# Tự động cài đặt ChromeDriver
 chromedriver_autoinstaller.install()
 
-user_agents = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0) Gecko/20100101 Firefox/89.0",
-    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0",
-]
+# Thời gian chạy tối đa (35 phút)
+MAX_RUN_TIME = 1730  # 35 phút (tính theo giây)
 
-def create_driver(user_agent):
+def create_chrome_options():
     options = webdriver.ChromeOptions()
     options.add_argument("--disable-blink-features=AutomationControlled")
     ua = UserAgent()
@@ -36,149 +28,116 @@ def create_driver(user_agent):
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
-    options.add_argument('--disable-gpu')
-    driver = uc.Chrome(options=options)
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    return options
 
-    return driver
-
-def scroll_down(driver):
-    for _ in range(10):
-        driver.execute_script("window.scrollBy(0, 300);")
-        random_delay(1, 3)
-
-def random_delay(min_seconds=1, max_seconds=5):
-    time.sleep(random.uniform(min_seconds, max_seconds))
-
-def perform_human_like_actions(driver, element):
-    actions = ActionChains(driver)
-    
+# Di chuyển chuột ngẫu nhiên
+def random_mouse_move(driver):
     try:
-        actions.move_to_element(element).perform()
-        random_delay(0.5, 1.0)
-
-        offset_x = random.randint(-element.size['width'] // 4, element.size['width'] // 4)
-        offset_y = random.randint(-element.size['height'] // 4, element.size['height'] // 4)
-
-        actions.move_by_offset(offset_x, offset_y).click().perform()
-        print(f"Clicked at offset ({offset_x}, {offset_y})")
-        actions.move_by_offset(-offset_x, -offset_y).perform()
-
+        window_width = driver.execute_script("return window.innerWidth;")
+        window_height = driver.execute_script("return window.innerHeight;")
+        action = ActionChains(driver)
+        x_offset = random.randint(-window_width//2, window_width//2)
+        y_offset = random.randint(-window_height//2, window_height//2)
+        action.move_by_offset(x_offset, y_offset).perform()
+        time.sleep(random.uniform(0.5, 1.5))
     except WebDriverException as e:
-        print(f"Failed to click element: {e}")
+        print(f"Error: {e}")
+        driver.execute_script("window.scrollBy(0, 250);")
+        time.sleep(1)
 
-def run_thread(links, thread_id, email, password):
-    MAX_DRIVERS = 5
-    drivers = []
-    os.makedirs("screenshots", exist_ok=True)
+link_list = [
+    "https://vidoza.net/ztpgu8by8ikr.html",
+    "https://vidoza.net/omaoqnc6mrr6.html",
+    "https://vidoza.net/iy1vzopdpztr.html",
+    "https://vidoza.net/hybefuiy04fm.html",
+    "https://vidoza.net/hwz4y0vkaoq1.html",
+    "https://vidoza.net/peigyecqfx1p.html",
+    "https://vidoza.net/98bg1sjnusu1.html",
+    "https://vidoza.net/pbzkuh20pwnj.html",
+    "https://vidoza.net/cjpgc87qip3n.html",
+    "https://vidoza.net/dy0rv0p7h3nh.html",
+    "https://vidoza.net/3xqk80ieu79e.html",
+    "https://vidoza.net/4x20dqp8mj0r.html",
+    "https://vidoza.net/pjujya2fuysm.html",
+    "https://vidoza.net/w8jecxpis8mm.html",
+    "https://vidoza.net/uxh6vhimfl6g.html",
+    "https://vidoza.net/fvqpwzxxds2c.html",
+]
 
-    for i in range(min(len(links), MAX_DRIVERS)):
-        driver = create_driver(user_agents[i % len(user_agents)])
-        drivers.append(driver)
-        try:
-            driver.get("https://www.youtube.com/")
+selected_links = random.sample(link_list, 4)
 
-            time.sleep(2)
-            sign_in_button = driver.find_element(By.XPATH, '//*[@aria-label="Sign in"]')
-            sign_in_button.click()
-            
-            email_field = driver.find_element(By.XPATH, '//*[@id="identifierId"]')
-            email_field.send_keys(email)
-            email_field.send_keys(Keys.RETURN)
-            
-            time.sleep(10)
-            
-            password_field = driver.find_element(By.XPATH, '//*[@name="Passwd"]')
-            password_field.send_keys(password)
-            password_field.send_keys(Keys.RETURN)
-            time.sleep(5)
-            driver.get(links[i])
-            
-            driver.save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
-            perform_human_like_actions(driver, driver.find_element(By.XPATH, '//body'))
-        except Exception as e:
-            print(f"Error with driver {i}: {e}")
+def run_main_selenium():
+    start_time = time.time()  # Lưu thời gian bắt đầu
 
-    run_time = random.randint(300, 400)
-    start_time = time.time()
+    for link in selected_links:
+        for i in ["1", "2", "3"]:
+            # Kiểm tra nếu đã chạy quá 35 phút
+            if time.time() - start_time >= MAX_RUN_TIME:
+                print("Đã chạy đủ 35 phút, dừng ngay!")
+                return  # Dừng chương trình
 
-    while time.time() - start_time < run_time:
-        sleep_time = random.randint(100, 200)
-        time.sleep(sleep_time)
-        for j in range(len(drivers)):
+            driver = webdriver.Chrome(options=create_chrome_options())
+            driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+            driver.get("https://www.dailymotion.com/playlist/x9dd5m")
+            time.sleep(random.uniform(10, 30))
+
+            driver.get(link)
+            time.sleep(random.uniform(3, 5))
+            random_mouse_move(driver)
+
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@id='vplayer']")))
+
+            for i in range(5):
+                if time.time() - start_time >= MAX_RUN_TIME:
+                    print("Đã chạy đủ 35 phút, dừng ngay!")
+                    driver.quit()
+                    return
+                
+                try:
+                    play_button_xpath = "//button[@title='Play Video']"
+                    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, play_button_xpath)))
+                    play_button = driver.find_element(By.XPATH, play_button_xpath)
+                    driver.execute_script("arguments[0].scrollIntoView(true);", play_button)
+                    play_button.click()
+                    driver.execute_script("""
+                        var playButton = document.evaluate("//div[@id='vplayer']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                        if (playButton) {
+                            playButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(function() { playButton.click(); }, 500);
+                        }
+                    """)
+                    time.sleep(5)
+                    random_mouse_move(driver)
+                    random_mouse_move(driver)
+                except Exception as e:
+                    print(f"Error: {e}")
+
+            time.sleep(150)
+
+            # Kiểm tra nếu đã chạy quá 35 phút
+            if time.time() - start_time >= MAX_RUN_TIME:
+                print("Đã chạy đủ 35 phút, dừng ngay!")
+                driver.quit()
+                return
+
+            driver.quit()
+
+        download_button_xpath = "//a[@class='btn btn-success btn-lg btn-download btn-download-n']"
+        for i in range(5):
+            if time.time() - start_time >= MAX_RUN_TIME:
+                print("Đã chạy đủ 35 phút, dừng ngay!")
+                driver.quit()
+                return
+
             try:
-                sleep_time = random.randint(1, 10)
-                drivers[j].refresh()
-                perform_human_like_actions(drivers[j], drivers[j].find_element(By.XPATH, '//body'))
-           
-                run = random.randint(1, 15)
-                if run == 5:
-                    try:
-                        like_button_xpath = '//button[@title="I like this"]'
-                        like_button = drivers[j].find_element(By.XPATH, like_button_xpath)
-                        like_button.click()
-                        print("Liked the video successfully.")
-                    except Exception as e:
-                        print(f"Failed to like the video: {e}")
-                        
-                    
-                drivers[j].save_screenshot(f"screenshots/screenshot_{thread_id}_{time.time()}.png")
+                download_button = driver.find_element(By.XPATH, download_button_xpath)
+                download_button.click()
+                time.sleep(random.uniform(1, 3))
+                random_mouse_move(driver)
             except Exception as e:
-                print(f"Error with driver {j}: {e}")
+                print(f"Error: {e}")
 
-    for drv in drivers:
-        drv.quit()
+    print("Kết thúc Selenium bot sau 35 phút.")
 
-def main():
-    parser = argparse.ArgumentParser(description="Selenium Bot")
-    parser.add_argument('--email', type=str, required=True, help="Email for login")
-    parser.add_argument('--password', type=str, required=True, help="Password for login")
-    args = parser.parse_args()
-
-    email = args.email
-    password = args.password
-
-    # user_agent = random.choice(user_agents)
-    # driver = create_driver(user_agent)
-    # driver.get("https://www.youtube.com/@Boymuscleworkout/videos")
-    
-    # driver.implicitly_wait(10)
-    
-    # links = []
-    # while len(links) < 500:
-    #     elements = driver.find_elements(By.XPATH, '//a[@id="video-title-link"]')
-    #     new_links = [element.get_attribute('href') for element in elements]
-    #     links.extend([link for link in new_links if link not in links])
-    #     print(f"Number of unique links: {len(links)}")
-    #     scroll_down(driver)
-    
-    # driver.quit()
-    with open('links.txt', 'r') as file:
-        # Đọc từng dòng, loại bỏ khoảng trắng và thêm vào danh sách
-        links = [line.strip() for line in file if line.strip()]
-
-        # Kiểm tra kết quả
-    print(len(links))
-    
-    shuffle(links)
-    
-    chunk_size = 5
-    chunks = [links[i:i + chunk_size] for i in range(0, len(links), chunk_size)]
-    
-    threads = []
-    for i, chunk in enumerate(chunks):
-        thread = threading.Thread(target=run_thread, args=(chunk, i, email, password))
-        threads.append(thread)
-        random_delay(60, 90)
-        thread.start()
-
-        if len(threads) >= 5:
-            for t in threads:
-                t.join()
-            threads = []
-    
-    for thread in threads:
-        thread.join()
-
-if __name__ == "__main__":
-    main()
+run_main_selenium()
